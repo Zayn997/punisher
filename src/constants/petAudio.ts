@@ -8,8 +8,8 @@ export const sensitivityThresholds: Record<Sensitivity, number> = {
   high: 0.1,
 };
 
-export const impactCooldownMs = 180;
-export const comboHitGapMs = 550;
+export const impactCooldownMs = 240;
+export const comboHitGapMs = 500;
 export const comboResetAfterMs = 1300;
 
 export const modeClips: Record<ComboMode, string[]> = {
@@ -21,7 +21,7 @@ export const modeClips: Record<ComboMode, string[]> = {
 };
 
 export const fallbackWords: Record<SpeechMode, string[]> = {
-  normal: ["Ah!", "Ow!", "Hey!", "Aaaah!", "Please no!"],
+  normal: ["Ahhhh!", "Owwwww!", "Hey Hey!", "Aaaahhhh!", "Please no!"],
   painful: ["Ah!", "Ow!"],
   sexy: ["Hey there~", "Aaaah~", "Oh wow~"],
   sing: ["La la la~"],
