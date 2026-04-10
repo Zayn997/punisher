@@ -13,7 +13,6 @@ function App() {
     setSensitivity,
     setVolume,
     startListening,
-    status,
     stopListening,
     threshold,
     volume,
@@ -21,12 +20,12 @@ function App() {
 
   return (
     <main className="app">
-      <header>
-        <h1>Punisher Pet</h1>
-        <p>{status}</p>
-      </header>
-
-      <FaceStage expression={expression} lastMode={lastMode} />
+      <FaceStage
+        expression={expression}
+        lastMode={lastMode}
+        score={score}
+        isListening={isListening}
+      />
 
       <ControlsPanel
         isListening={isListening}

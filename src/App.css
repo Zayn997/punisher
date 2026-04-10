@@ -1,46 +1,88 @@
 .app {
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255, 245, 199, 0.9),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 190, 140, 0.25),
+      transparent 26%
+    ),
+    linear-gradient(160deg, #f6debd 0%, #f4c58e 42%, #d57d4b 100%);
+}
+
+.pet-stage {
+  min-height: calc(100vh - 48px);
+}
+
+.pet-shell {
+  min-height: calc(100vh - 48px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-header {
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: clamp(2rem, 4vw, 2.8rem);
-}
-
-header p {
-  margin: 8px 0 0;
-  opacity: 0.85;
-}
-
-.stage {
-  width: min(560px, 94vw);
-  border-radius: 26px;
-  padding: 20px;
-  background: linear-gradient(145deg, #fff4db 0%, #ffddb4 100%);
-  border: 3px solid #29211d;
-  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
-  text-align: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 24px 110px;
 }
 
 .face {
-  width: min(300px, 64vw);
+  --energy: 0;
+  width: min(340px, 58vw);
   aspect-ratio: 1;
-  margin: 4px auto 12px;
+  margin: 0 auto 14px;
   border-radius: 50%;
   border: 6px solid #2a1f1c;
   background: radial-gradient(circle at 35% 30%, #fff2a8, #ffbd64 62%, #f29f48);
   position: relative;
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease;
+  animation: idleBob 2.8s ease-in-out infinite;
+}
+
+.face.mode-painful {
+  filter: saturate(1.1) hue-rotate(-8deg);
+}
+
+.face.mode-sexy {
+  filter: saturate(1.2) hue-rotate(8deg);
+}
+
+.face.mode-sing {
+  filter: saturate(1.15) hue-rotate(18deg);
+}
+
+.brows {
+  position: absolute;
+  width: 64%;
+  display: flex;
+  justify-content: space-between;
+  top: 21%;
+  left: 18%;
+}
+
+.brow {
+  width: 52px;
+  height: 8px;
+  background: #1f1714;
+  border-radius: 99px;
+  transform-origin: center;
   transition: transform 0.12s ease;
+}
+
+.brow.left {
+  transform: rotate(calc(-4deg - (var(--energy) * 8deg)));
+}
+
+.brow.right {
+  transform: rotate(calc(4deg + (var(--energy) * 8deg)));
 }
 
 .eyes {
@@ -56,17 +98,45 @@ header p {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #211713;
+  background: #fff;
+  border: 3px solid #211713;
+  position: relative;
+  overflow: hidden;
+}
+
+.eye::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ffbe64;
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: blink 3s infinite;
+}
+
+.pupil {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1f1713;
+  position: absolute;
+  left: calc(50% - 9px);
+  top: calc(50% - 9px);
+  transform: translate(
+    calc((var(--energy) - 0.3) * 6px),
+    calc((0.3 - var(--energy)) * 5px)
+  );
+  transition: transform 0.08s linear;
 }
 
 .mouth {
   position: absolute;
-  width: 92px;
-  height: 28px;
+  width: calc(86px + (var(--energy) * 26px));
+  height: calc(22px + (var(--energy) * 10px));
   border-radius: 30px;
   border: 5px solid #1f1614;
   border-top: 0;
-  left: calc(50% - 46px);
+  left: calc(50% - (43px + (var(--energy) * 13px)));
   bottom: 23%;
   background: #f97179;
   transition: all 0.12s ease;
@@ -91,11 +161,14 @@ header p {
 
 .face.reacting {
   transform: scale(1.04) rotate(-1.2deg);
-  animation: pop 0.3s ease;
+  animation:
+    pop 0.3s ease,
+    reactPulse 0.3s ease;
 }
 
-.face.reacting .eye {
-  height: 36px;
+.face.reacting .eye::after {
+  animation: none;
+  transform: scaleY(0);
 }
 
 .face.reacting .mouth {
@@ -107,20 +180,60 @@ header p {
   border-top: 5px solid #1f1614;
 }
 
+.face.mode-sexy .mouth {
+  background: #ff7bb4;
+}
+
+.face.mode-sing .mouth {
+  background: #79b8ff;
+}
+
 .reaction-text {
   margin: 0;
-  font-size: 1rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(38, 27, 23, 0.86);
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #2b201c;
+  color: #fff5eb;
   letter-spacing: 0.02em;
 }
 
 .controls {
-  width: min(560px, 94vw);
-  background: rgba(255, 255, 255, 0.84);
-  border: 2px solid #2c2421;
-  border-radius: 20px;
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: min(340px, calc(100vw - 36px));
+  background: rgba(255, 248, 239, 0.8);
+  backdrop-filter: blur(18px);
+  border: 2px solid rgba(44, 36, 33, 0.9);
+  border-radius: 22px;
   padding: 16px;
+  display: grid;
+  gap: 14px;
+  box-shadow: 0 24px 50px rgba(47, 20, 5, 0.24);
+}
+
+.settings-panel {
+  border: 2px solid #2c2421;
+  border-radius: 12px;
+  background: rgba(255, 238, 221, 0.5);
+  padding: 8px 12px 12px;
+}
+
+.settings-panel summary {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+  color: #2b201c;
+  padding: 2px 0;
+}
+
+.settings-panel[open] summary {
+  margin-bottom: 12px;
+}
+
+.settings-content {
   display: grid;
   gap: 14px;
 }
@@ -195,14 +308,84 @@ input[type="range"] {
   }
 }
 
+@keyframes idleBob {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes blink {
+  0% {
+    transform: scaleY(0);
+  }
+  3% {
+    transform: scaleY(1);
+  }
+  7% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes reactPulse {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
 @media (max-width: 620px) {
+  .app {
+    padding: 14px;
+  }
+
+  .pet-stage,
+  .pet-shell {
+    min-height: calc(100vh - 28px);
+  }
+
+  .pet-shell {
+    padding: 28px 18px 118px;
+  }
+
+  .brow {
+    width: 42px;
+  }
+
   .eye {
     width: 34px;
     height: 34px;
   }
 
+  .pupil {
+    width: 14px;
+    height: 14px;
+    left: calc(50% - 7px);
+    top: calc(50% - 7px);
+  }
+
   .mouth {
     width: 78px;
     left: calc(50% - 39px);
+  }
+
+  .controls {
+    right: 14px;
+    left: 14px;
+    bottom: 14px;
+    width: auto;
   }
 }
