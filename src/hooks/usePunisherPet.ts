@@ -33,6 +33,14 @@ function getComboTarget(hitCount: number): {
   return { level: 0, mode: null };
 }
 
+function getReactionDurationMs(mode: ComboMode | null): number {
+  if (mode === "tickle") {
+    return 2000;
+  }
+
+  return 420;
+}
+
 export function usePunisherPet() {
   const [isListening, setIsListening] = useState(false);
   const [expression, setExpression] = useState<Expression>("idle");
@@ -264,7 +272,6 @@ export function usePunisherPet() {
   const reactToImpact = (impactScore: number, mode: ComboMode) => {
     setExpression("reacting");
     setLastMode(mode);
-    const reactionDurationMs = mode === "tickle" ? 700 : 420;
 
     if (reactionTimerRef.current !== null) {
       clearTimeout(reactionTimerRef.current);
@@ -272,7 +279,7 @@ export function usePunisherPet() {
 
     reactionTimerRef.current = window.setTimeout(() => {
       setExpression("idle");
-    }, reactionDurationMs);
+    }, getReactionDurationMs(mode));
 
     playModeAudio(mode, impactScore);
   };
@@ -334,7 +341,7 @@ export function usePunisherPet() {
         }
         reactionTimerRef.current = window.setTimeout(() => {
           setExpression("idle");
-        }, 420);
+        }, getReactionDurationMs(null));
 
         playNormalAudio(impactScore);
       }
