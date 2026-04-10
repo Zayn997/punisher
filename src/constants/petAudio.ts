@@ -18,11 +18,19 @@ export const modeClips: Record<ComboMode, string[]> = {
   ],
   sexy: [new URL("../assets/sounds/sexy/sexy_03.mp3", import.meta.url).href],
   sing: [new URL("../assets/sounds/sing/sing_01.mp3", import.meta.url).href],
+  tickle: [
+    new URL("../assets/sounds/tickle/tickle_01.mp3", import.meta.url).href,
+  ],
 };
+
+export const normalClips: string[] = [
+  new URL("../assets/sounds/normal/normal_01.mp3", import.meta.url).href,
+];
 
 export const fallbackWords: Record<SpeechMode, string[]> = {
   normal: ["Ahhhh!", "Owwwww!", "Hey Hey!", "Aaaahhhh!", "Please no!"],
   painful: ["Ah!", "Ow!"],
   sexy: ["Hey there~", "Aaaah~", "Oh wow~"],
   sing: ["La la la~"],
+  tickle: ["Nooo, stop tickling!", "Haha wait!", "Too much!"],
 };

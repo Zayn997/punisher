@@ -18,7 +18,7 @@ function getReactionText(
   }
 
   if (expression === "idle") {
-    return "1x normal voice, 2x painful, 3x sexy, 4x sing";
+    return "1x normal voice, 2x painful, 3x sexy, 4x sing, 5x tickle";
   }
 
   if (mode === "painful") {
@@ -29,6 +29,9 @@ function getReactionText(
   }
   if (mode === "sing") {
     return "SING MODE";
+  }
+  if (mode === "tickle") {
+    return "TICKLE MODE";
   }
 
   return "NORMAL MODE";

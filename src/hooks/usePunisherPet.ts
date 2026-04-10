@@ -5,6 +5,7 @@ import {
   fallbackWords,
   impactCooldownMs,
   modeClips,
+  normalClips,
   sensitivityThresholds,
 } from "../constants/petAudio";
 import type { ComboMode, Expression, Sensitivity } from "../types/pet";
@@ -17,6 +18,9 @@ function getComboTarget(hitCount: number): {
   level: number;
   mode: ComboMode | null;
 } {
+  if (hitCount >= 5) {
+    return { level: 4, mode: "tickle" };
+  }
   if (hitCount >= 4) {
     return { level: 3, mode: "sing" };
   }
@@ -33,7 +37,7 @@ export function usePunisherPet() {
   const [isListening, setIsListening] = useState(false);
   const [expression, setExpression] = useState<Expression>("idle");
   const [status, setStatus] = useState(
-    "Press start, then hit 2/3/4 times quickly.",
+    "Press start, then hit 2/3/4/5 times quickly.",
   );
   const [sensitivity, setSensitivity] = useState<Sensitivity>("balanced");
   const [volume, setVolume] = useState(0.85);
@@ -197,6 +201,37 @@ export function usePunisherPet() {
     window.speechSynthesis.speak(utterance);
   };
 
+  const playNormalAudio = (impactScore: number) => {
+    if (normalClips.length === 0) {
+      playNormalSpeech(impactScore);
+      return;
+    }
+
+    const clip = normalClips[Math.floor(Math.random() * normalClips.length)];
+    const audio = new Audio(clip);
+    audio.volume = clamp(volume + impactScore * 0.35, 0.2, 1);
+    audio.playbackRate = clamp(1 + impactScore * 0.2, 0.9, 1.2);
+
+    if (activeAudioRef.current) {
+      activeAudioRef.current.pause();
+      activeAudioRef.current.currentTime = 0;
+    }
+
+    activeAudioRef.current = audio;
+    audio.onended = () => {
+      if (activeAudioRef.current === audio) {
+        activeAudioRef.current = null;
+      }
+    };
+
+    audio.play().catch(() => {
+      if (activeAudioRef.current === audio) {
+        activeAudioRef.current = null;
+      }
+      playNormalSpeech(impactScore);
+    });
+  };
+
   const registerImpact = (
     now: number,
   ): { mode: ComboMode | null; hitCount: number } => {
@@ -229,6 +264,7 @@ export function usePunisherPet() {
   const reactToImpact = (impactScore: number, mode: ComboMode) => {
     setExpression("reacting");
     setLastMode(mode);
+    const reactionDurationMs = mode === "tickle" ? 700 : 420;
 
     if (reactionTimerRef.current !== null) {
       clearTimeout(reactionTimerRef.current);
@@ -236,7 +272,7 @@ export function usePunisherPet() {
 
     reactionTimerRef.current = window.setTimeout(() => {
       setExpression("idle");
-    }, 420);
+    }, reactionDurationMs);
 
     playModeAudio(mode, impactScore);
   };
@@ -300,7 +336,7 @@ export function usePunisherPet() {
           setExpression("idle");
         }, 420);
 
-        playNormalSpeech(impactScore);
+        playNormalAudio(impactScore);
       }
 
       if (mode) {
@@ -339,7 +375,9 @@ export function usePunisherPet() {
         analyser.fftSize,
       ) as Float32Array<ArrayBuffer>;
 
-      setStatus("Listening. Hit quickly: 2x painful, 3x sexy, 4x sing.");
+      setStatus(
+        "Listening. Hit quickly: 2x painful, 3x sexy, 4x sing, 5x tickle.",
+      );
       setIsListening(true);
       lastTriggerRef.current = performance.now();
       animationRef.current = requestAnimationFrame(monitorSignal);
