@@ -1,5 +1,11 @@
 # Punisher Pet
 
+<p align="center">
+  <img src="./public/punisher-face.svg" width="180" alt="Punisher Pet idle face" />
+  <img src="./public/punisher-face-reacting.svg" width="180" alt="Punisher Pet reacting face" />
+</p>
+<p align="center"><em>Idle</em> | <em>Reacting</em></p>
+
 <p>
   <a href="#english">English</a> | <a href="#简体中文">简体中文</a>
 </p>
@@ -16,6 +22,8 @@ Punisher Pet is a React + Electron desktop app that listens to microphone impact
   - 2x quick hits: painful mode
   - 3x quick hits: sexy mode
   - 4x quick hits: sing mode
+  - 5x quick hits: tickle mode
+- Tickle mode keeps reacting longer with a dedicated jiggle animation.
 - Real-time signal meter and adjustable sensitivity.
 - Adjustable output/yell volume.
 - Audio clips with speech fallback when needed.
@@ -50,8 +58,10 @@ This starts both:
 
 1. Click **Start listening**.
 2. Allow microphone permission.
-3. Hit/tap quickly to trigger combo modes.
+3. Hit/tap quickly to trigger combo modes (2/3/4/5 hits).
 4. Open **Settings** to adjust sensitivity and yell volume.
+
+Combo reference: 2x painful, 3x sexy, 4x sing, 5x tickle.
 
 ### Project Structure
 
@@ -83,6 +93,8 @@ Punisher Pet 是一个基于 React + Electron 的桌面应用。它会监听麦�
   - 快速 2 连击：painful 模式
   - 快速 3 连击：sexy 模式
   - 快速 4 连击：sing 模式
+  - 快速 5 连击：tickle 模式
+- tickle 模式会保持更长的反应时间，并带有专属抖动动画。
 - 实时信号强度显示，可调灵敏度。
 - 可调输出音量（yell volume）。
 - 优先播放本地音频，失败时使用语音合成兜底。
@@ -117,8 +129,10 @@ npm run dev
 
 1. 点击 **Start listening**。
 2. 允许麦克风权限。
-3. 通过快速敲击触发连击模式。
+3. 通过快速敲击触发连击模式（2/3/4/5 连）。
 4. 在 **Settings** 中调节灵敏度和音量。
+
+连击参考：2 连 painful，3 连 sexy，4 连 sing，5 连 tickle。
 
 ### 项目结构
 
